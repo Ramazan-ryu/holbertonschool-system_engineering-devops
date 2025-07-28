@@ -1,0 +1,44 @@
+About this infrastructure:
+1.For every additional element, why you are adding it
+Load Balancer (HAProxy): Distributes traffic to prevent overload.
+2nd Server: Redundancy and better performance.
+MySQL Replica: Reduces load on primary DB and provides backup.
+
+2.What distribution algorithm your load balancer is configured with and how it works
+Round Robin: Sends requests to each server in order, evenly.
+Why Use It: Simple, effective for evenly distributing requests when all servers have similar capacity.
+
+3.Is your load-balancer enabling an Active-Active or Active-Passive setup, explain the difference between both
+This setup: Active-Passive
+
+Active-Active: In an Active-Active setup, all servers in a cluster are actively processing requests simultaneously. If one server fails, the remaining active servers continue to handle the load. This provides better resource utilization and higher availability. Our two web/application servers are both actively serving traffic.
+
+Active-Passive: In an Active-Passive setup, one server (the "active" one) handles all requests, while the other server (the "passive" one) is on standby, ready to take over if the active server fails. The passive server typically doesn't process requests until a failover occurs. This provides redundancy but less efficient resource utilization.
+one handles requests, the other is backup only
+
+4.How a database Primary-Replica (Master-Slave) cluster works
+Primary (Master): Handles all write operations.
+
+Replica (Slave): Receives read-only copies from the Primary via replication.
+Changes on the Primary are automatically synced to the Replica.
+
+5.What is the difference between the Primary node and the Replica node in regard to the application
+Primary Node:
+Accepts writes and reads
+Critical for application data changes
+
+Replica Node:
+Accepts read-only queries
+Improves read performance and acts as a backup
+
+The issues are with this infrastructure:
+1.Where are SPOF
+- If HAProxy breaks, users can't reach the servers.
+- If the main database fails, users can't save data.
+2.Security issues (no firewall, no HTTPS)
+- No firewall: All services are open and easy to attack.
+- No HTTPS: Data is not safe; it can be stolen.
+3.No monitoring
+- No tools to check if the server is working well.
+- Problems may stay hidden until users report them.
+

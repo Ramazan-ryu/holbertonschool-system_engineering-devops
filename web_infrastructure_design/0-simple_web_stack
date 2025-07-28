@@ -1,0 +1,27 @@
+About this infrastructure:
+1.What is a server
+A server is a physical or virtual computer that provides services to other devices (clients). In this case, it's hosting the web server, application logic, and database to serve a website.
+
+2.What is the role of the domain name
+Domain Name (foobar.com): A human-readable address for your website, translated to an IP by DNS.
+
+3.What type of DNS record www is in www.foobar.com
+www DNS record: A record www is in www.footbar.com
+
+4.What is the role of the web server
+The web server (Nginx) handles HTTP requests from users. It serves static content (HTML, CSS, JS) and forwards dynamic requests to the application server.
+
+4.What is the role of the application server
+The application server runs your actual application code (e.g., written in Python, PHP, Node.js, etc.). It processes business logic and communicates with the database.
+
+5.What is the role of the database
+The database (MySQL) stores persistent data like user accounts, blog posts, orders, etc. The application server queries or updates the database when needed.
+
+6.What is the server using to communicate with the computer of the user requesting the website
+The server communicates with the user's browser over the HTTP(80)/HTTPS(443) protocol using the TCP/IP stack.
+
+
+The issues are with this infrastructure:
+1.SPOF(single point of failure).	If one server stops, everything stops. The service is down.
+2. Downtime.	Updating or restarting the server causes the service to stop for a while.
+3.Scalability.	It can't handle many users at the same time. No extra servers or backups to help.
