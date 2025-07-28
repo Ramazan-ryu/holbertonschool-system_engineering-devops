@@ -1,0 +1,62 @@
+About this infrastructure:
+1.For every additional element, why you are adding it
+Firewalls (x3)
+- Firewall 1 (Edge): Protects from external threats before reaching the load balancer.
+- Firewall 2 & 3 (Internal): Isolates individual servers from each other, enforces segmentation (e.g., DB-only access from app layer).
+- Purpose: Stop DDoS, port scanning, brute force attempts. Restrict access by IP, protocol, and port.
+HTTPS (SSL Certificate at Load Balancer)
+- Ensures encrypted communication using TLS.
+- Serves HTTPS for www.foobar.com.
+-  Purpose: Prevent eavesdropping, tampering, and impersonation. Required for most security standards (e.g., PCI, GDPR).
+Monitoring Clients (x3)
+- Each server has a Sumologic Collector agent installed.
+- Purpose: Collect system, application, and web metrics + logs in real-time.
+- Data types collected: CPU, memory, HTTP status codes, QPS, DB errors, etc.
+
+3 Firewalls: Block unauthorized access; protect load balancer and servers.
+SSL Certificate (HTTPS): Encrypts user traffic for security.
+3 Monitoring Clients: Installed on each server to track metrics (e.g., CPU, QPS).
+
+2.What are firewalls for
+Filter traffic --  allow only trusted ports/IPs (e.g., 443 for HTTPS).
+Prevent attacks from outside the network.
+
+3.Why is the traffic served over HTTPS
+Encrypts data between users and the site.
+Prevents eavesdropping, man-in-the-middle attacks.
+Builds trust with users (browser shows "secure").
+
+4.What monitoring is used for
+Tracks health of servers, services, and traffic.
+Alerts you when something fails or slows down.
+
+5.How the monitoring tool is collecting data
+Each server runs a monitoring agent (e.g., SumoLogic, Prometheus).
+Agent collects logs and metrics and sends to central dashboard.
+
+Collector Agent on each server:
+- Parses system logs (syslog, access/error logs).
+- Sends structured events to the Sumologic cloud.
+ Dashboards/Alerts: Visualize metrics, trigger warnings.
+
+6.Explain what to do if you want to monitor your web server QPS
+Use Nginx logs or metrics.
+Monitor with:
+	Nginx status module + Prometheus exporter
+	Tools like SumoLogic to parse logs and count requests per second
+
+
+
+The issues are with this infrastructure:
+1.Why terminating SSL at the load balancer level is an issue
+Problem: Inside traffic is not secure.
+Solution: Use encryption between load balancer and servers (end-to-end encryption).
+
+2.Why having only one MySQL server capable of accepting writes is an issue
+Problem: If the main database stops, you can't write data.
+Solution: Add backup server or use more than one main server.
+
+3.Why having servers with all the same components (database, web server and application server) might be a problem
+Problem: It's hard to grow and protect. If one part (like database) breaks, all servers may stop.
+Solution: Use different servers for different jobs (one for database, one for web, one for app).
+
